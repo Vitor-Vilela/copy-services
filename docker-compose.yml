@@ -108,7 +108,11 @@ services:
     build: ./Services/emailservice
     environment:
       - CONSUL_HOST=consul
-      - EMAIL_HOST=smtp.mailtrap.io # Exemplo
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+      - EMAIL_USER=cospervini@gmail.com
+      - EMAIL_PASSWORD=bcqh hvza nbwb vjsk
+      - EMAIL_FROM=cospervini@gmail.com
     depends_on:
       - consul
 
