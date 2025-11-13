@@ -1,9 +1,9 @@
 services:
   consul:
     image: hashicorp/consul:latest
+    command: agent -server -bootstrap-expect=1 -bind=0.0.0.0 -client=0.0.0.0 -ui
     ports:
       - "8500:8500"
-    command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=1 -ui
     networks:
       - backend
 
@@ -42,16 +42,24 @@ services:
       - DB_PASS=root
       - DB_NAME=auth_db
       - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=auth-service
       - PORT=3000
       - ADDRESS=auth-service
     depends_on:
-      - consul
       - mysql-db
+      - consul
     networks:
       - backend
+
+  auth-service-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=auth-service -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - auth-service
+    network_mode: "service:auth-service"
 
   auth-service-2:
     build: ./Services/auth_service
@@ -61,51 +69,75 @@ services:
       - DB_PASS=root
       - DB_NAME=auth_db
       - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=auth-service
       - PORT=3000
       - ADDRESS=auth-service-2
     depends_on:
-      - consul
       - mysql-db
+      - consul
     networks:
       - backend
+
+  auth-service-2-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=auth-service-2 -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - auth-service-2
+    network_mode: "service:auth-service-2"
 
   animal-service-1:
     build: ./Services/adoptationService
     environment:
       - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
-      - Consul__Address=http://consul:8500
+      - Consul__Address=http://localhost:8500
       - Consul__ServiceName=animal-service
       - Consul__ServiceId=animal-service-1
       - Consul__ServiceAddress=http://animal-service-1
       - Consul__ServicePort=80
     depends_on:
-      - consul
       - mysql-db
+      - consul
     networks:
       - backend
+
+  animal-service-1-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=animal-service-1 -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - animal-service-1
+    network_mode: "service:animal-service-1"
 
   animal-service-2:
     build: ./Services/adoptationService
     environment:
       - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
-      - Consul__Address=http://consul:8500
+      - Consul__Address=http://localhost:8500
       - Consul__ServiceName=animal-service
       - Consul__ServiceId=animal-service-2
       - Consul__ServiceAddress=http://animal-service-2
       - Consul__ServicePort=80
     depends_on:
-      - consul
       - mysql-db
+      - consul
     networks:
       - backend
+
+  animal-service-2-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=animal-service-2 -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - animal-service-2
+    network_mode: "service:animal-service-2"
 
   fake-psp:
     build: ./Services/FakePSP
     environment:
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=payment-service
       - SERVICE_PORT=8000
@@ -117,10 +149,18 @@ services:
     networks:
       - backend
 
+  fake-psp-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=fake-psp -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - fake-psp
+    network_mode: "service:fake-psp"
+
   fake-psp-2:
     build: ./Services/FakePSP
     environment:
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=payment-service
       - SERVICE_PORT=8000
@@ -132,10 +172,18 @@ services:
     networks:
       - backend
 
+  fake-psp-2-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=fake-psp-2 -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - fake-psp-2
+    network_mode: "service:fake-psp-2"
+
   email-service:
     build: ./Services/emailservice
     environment:
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=email-service
       - SERVICE_PORT=8000
@@ -150,10 +198,18 @@ services:
     networks:
       - backend
 
+  email-service-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=email-service -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - email-service
+    network_mode: "service:email-service"
+
   email-service-2:
     build: ./Services/emailservice
     environment:
-      - CONSUL_HOST=consul
+      - CONSUL_HOST=localhost
       - CONSUL_PORT=8500
       - SERVICE_NAME=email-service
       - SERVICE_PORT=8000
@@ -167,6 +223,14 @@ services:
       - consul
     networks:
       - backend
+
+  email-service-2-consul:
+    image: hashicorp/consul:latest
+    command: agent -node=email-service-2 -bind=0.0.0.0 -client=0.0.0.0 -retry-join=consul
+    depends_on:
+      - consul
+      - email-service-2
+    network_mode: "service:email-service-2"
 
 networks:
   backend:
