@@ -72,29 +72,29 @@ const { v4: uuidv4 } = require("uuid");
 
 const consul = new Consul({
   host: process.env.CONSUL_HOST || "localhost",
-  port: process.env.CONSUL_PORT || 8500,
+  port: Number(process.env.CONSUL_PORT) || 8500,
 });
 
-const SERVICE_NAME = "auth-service";
-const SERVICE_PORT = process.env.PORT || 3000;
+const SERVICE_NAME = process.env.SERVICE_NAME || "auth-service";
+const SERVICE_PORT = Number(process.env.PORT) || 3000;
+const SERVICE_ADDRESS = process.env.ADDRESS || "auth-service";
 const SERVICE_ID = `${SERVICE_NAME}-${uuidv4()}`;
 
 const registerService = () => {
   const check = {
-    http: `http://${
-      process.env.ADDRESS || "host.docker.internal"
-    }:${SERVICE_PORT}/`,
+    http: `http://${SERVICE_ADDRESS}:${SERVICE_PORT}/`,
     interval: "10s",
     timeout: "5s",
+    deregistercriticalserviceafter: "30s",
   };
 
   consul.agent.service.register(
     {
       name: SERVICE_NAME,
       id: SERVICE_ID,
-      address: process.env.ADDRESS || "host.docker.internal",
-      port: Number(SERVICE_PORT),
-      check: check,
+      address: SERVICE_ADDRESS,
+      port: SERVICE_PORT,
+      check,
     },
     (err) => {
       if (err) console.error("Erro ao registrar no Consul:", err);
@@ -103,7 +103,7 @@ const registerService = () => {
   );
 };
 
-const PORT = process.env.PORT || 3000;
+const PORT = SERVICE_PORT;
 app.listen(PORT, () => {
   registerService();
   console.log(`[AuthService-MySQL] Rodando na porta ${PORT}`);

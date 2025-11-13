@@ -4,6 +4,8 @@ services:
     ports:
       - "8500:8500"
     command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=1 -ui
+    networks:
+      - backend
 
   mysql-db:
     image: mysql:8.0
@@ -13,7 +15,9 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./mysql-init:/docker-entrypoint-initdb.d # Script para criar banco do Auth também
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
 
   api-gateway:
     build: ./Services/ApiGateway
@@ -21,10 +25,14 @@ services:
       - "7001:7001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - GlobalConfiguration__ServiceDiscoveryProvider__Type=Consul
       - GlobalConfiguration__ServiceDiscoveryProvider__Host=consul
       - GlobalConfiguration__ServiceDiscoveryProvider__Port=8500
+      - GlobalConfiguration__ServiceDiscoveryProvider__Scheme=http
     depends_on:
       - consul
+    networks:
+      - backend
 
   auth-service:
     build: ./Services/auth_service
@@ -35,13 +43,16 @@ services:
       - DB_NAME=auth_db
       - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=auth-service
       - PORT=3000
-      - ADDRESS=auth-service # Nome do host para o Consul
+      - ADDRESS=auth-service
     depends_on:
       - consul
       - mysql-db
+    networks:
+      - backend
 
-  # Instância 2 do Auth Service
   auth-service-2:
     build: ./Services/auth_service
     environment:
@@ -51,13 +62,16 @@ services:
       - DB_NAME=auth_db
       - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=auth-service
       - PORT=3000
-      - ADDRESS=auth-service-2 # Nome para o Consul
+      - ADDRESS=auth-service-2
     depends_on:
       - consul
       - mysql-db
+    networks:
+      - backend
 
-  # Instância 1 do Animal Service
   animal-service-1:
     build: ./Services/adoptationService
     environment:
@@ -70,8 +84,9 @@ services:
     depends_on:
       - consul
       - mysql-db
+    networks:
+      - backend
 
-  # Instância 2 do Animal Service
   animal-service-2:
     build: ./Services/adoptationService
     environment:
@@ -84,30 +99,47 @@ services:
     depends_on:
       - consul
       - mysql-db
+    networks:
+      - backend
 
   fake-psp:
     build: ./Services/FakePSP
     environment:
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
       - SERVICE_NAME=payment-service
+      - SERVICE_PORT=8000
+      - SERVICE_ADDRESS=fake-psp
       - BASE_URL=http://localhost:7001/payments
     depends_on:
       - consul
+      - api-gateway
+    networks:
+      - backend
 
-  # Instância 2 do Fake PSP
   fake-psp-2:
     build: ./Services/FakePSP
     environment:
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
       - SERVICE_NAME=payment-service
+      - SERVICE_PORT=8000
+      - SERVICE_ADDRESS=fake-psp-2
       - BASE_URL=http://localhost:7001/payments
     depends_on:
       - consul
+      - api-gateway
+    networks:
+      - backend
 
   email-service:
     build: ./Services/emailservice
     environment:
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=email-service
+      - SERVICE_PORT=8000
+      - SERVICE_ADDRESS=email-service
       - EMAIL_HOST=smtp.gmail.com
       - EMAIL_PORT=587
       - EMAIL_USER=cospervini@gmail.com
@@ -115,12 +147,17 @@ services:
       - EMAIL_FROM=cospervini@gmail.com
     depends_on:
       - consul
+    networks:
+      - backend
 
-  # Instância 2 do Email Service
   email-service-2:
     build: ./Services/emailservice
     environment:
       - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=email-service
+      - SERVICE_PORT=8000
+      - SERVICE_ADDRESS=email-service-2
       - EMAIL_HOST=smtp.gmail.com
       - EMAIL_PORT=587
       - EMAIL_USER=cospervini@gmail.com
@@ -128,3 +165,9 @@ services:
       - EMAIL_FROM=cospervini@gmail.com
     depends_on:
       - consul
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

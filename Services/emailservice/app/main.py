@@ -9,6 +9,7 @@ from app.services.email_service import send_email as send_email_service
 # --- Configurações do Serviço ---
 SERVICE_NAME = os.getenv("SERVICE_NAME", "email-service")
 SERVICE_PORT = int(os.getenv("SERVICE_PORT", 8000))
+SERVICE_ADDRESS = os.getenv("SERVICE_ADDRESS")
 CONSUL_HOST = os.getenv("CONSUL_HOST", "localhost")
 CONSUL_PORT = int(os.getenv("CONSUL_PORT", 8500))
 SERVICE_ID = f"{SERVICE_NAME}-{uuid.uuid4()}"
@@ -21,23 +22,27 @@ app = FastAPI(
 
 consul_client = consul.Consul(host=CONSUL_HOST, port=CONSUL_PORT)
 
-def get_service_ip():
+
+def get_service_address() -> str:
+    if SERVICE_ADDRESS:
+        return SERVICE_ADDRESS
     try:
         return socket.gethostbyname(socket.gethostname())
     except socket.gaierror:
         return "127.0.0.1"
 
+
 def register_service():
-    ip = get_service_ip()
-    print(f"Registrando serviço {SERVICE_ID} em {ip}:{SERVICE_PORT} no Consul...")
+    host = get_service_address()
+    print(f"Registrando serviço {SERVICE_ID} em {host}:{SERVICE_PORT} no Consul...")
     try:
         consul_client.agent.service.register(
             name=SERVICE_NAME,
             service_id=SERVICE_ID,
-            address=ip,
+            address=host,
             port=SERVICE_PORT,
             check={
-                "http": f"http://{ip}:{SERVICE_PORT}/health",
+                "http": f"http://{host}:{SERVICE_PORT}/health",
                 "interval": "10s",
                 "timeout": "5s",
                 "deregistercriticalserviceafter": "30s"
@@ -47,6 +52,7 @@ def register_service():
     except Exception as e:
         print(f"!!!!!! Erro ao registrar no Consul: {e}. O serviço continuará rodando localmente. !!!!!!")
 
+
 def deregister_service():
     print(f"Desregistrando serviço {SERVICE_ID}...")
     try:
@@ -55,9 +61,11 @@ def deregister_service():
     except Exception as e:
         print(f"!!!!!! Erro ao desregistrar do Consul: {e}. !!!!!!")
 
+
 @app.on_event("startup")
 def on_startup():
     register_service()
+
 
 @app.on_event("shutdown")
 def on_shutdown():

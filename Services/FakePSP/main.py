@@ -20,38 +20,39 @@ from database import engine, Base, get_db
 BASE_URL_OVERRIDE = os.getenv("BASE_URL")
 SERVICE_NAME = os.getenv("SERVICE_NAME", "payment-service")
 SERVICE_PORT = int(os.getenv("SERVICE_PORT", 8000))
+SERVICE_ADDRESS = os.getenv("SERVICE_ADDRESS")
 CONSUL_HOST = os.getenv("CONSUL_HOST", "localhost")
 CONSUL_PORT = int(os.getenv("CONSUL_PORT", 8500))
 SERVICE_ID = f"{SERVICE_NAME}-{uuid.uuid4()}"
 
-# Cria as tabelas no banco de dados (se não existirem)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FakePSP API (Python)")
 
-# Cliente HTTP assíncrono para disparar o webhook
-# Adicionando verify=False para ignorar verificação SSL (comum em localhost)
 http_client = httpx.AsyncClient(verify=False)
-
 consul_client = consul.Consul(host=CONSUL_HOST, port=CONSUL_PORT)
 
-def get_service_ip():
+
+def get_service_address() -> str:
+    if SERVICE_ADDRESS:
+        return SERVICE_ADDRESS
     try:
         return socket.gethostbyname(socket.gethostname())
     except socket.gaierror:
         return "127.0.0.1"
 
+
 def register_service():
-    ip = get_service_ip()
-    print(f"Registrando serviço {SERVICE_ID} em {ip}:{SERVICE_PORT} no Consul...")
+    host = get_service_address()
+    print(f"Registrando serviço {SERVICE_ID} em {host}:{SERVICE_PORT} no Consul...")
     try:
         consul_client.agent.service.register(
             name=SERVICE_NAME,
             service_id=SERVICE_ID,
-            address=ip,
+            address=host,
             port=SERVICE_PORT,
             check={
-                "http": f"http://{ip}:{SERVICE_PORT}/health",
+                "http": f"http://{host}:{SERVICE_PORT}/health",
                 "interval": "10s",
                 "timeout": "5s",
                 "deregistercriticalserviceafter": "30s"
@@ -60,6 +61,7 @@ def register_service():
         print("Serviço registrado com sucesso no Consul.")
     except Exception as e:
         print(f"!!!!!! Erro ao registrar no Consul: {e}. O serviço continuará rodando localmente. !!!!!!")
+
 
 def deregister_service():
     print(f"Desregistrando serviço {SERVICE_ID}...")
