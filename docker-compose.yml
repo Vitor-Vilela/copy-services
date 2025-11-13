@@ -43,6 +43,22 @@ services:
       - consul
       - mysql-db
 
+  # Instância 2 do Auth Service
+  auth-service-2:
+    build: ./Services/auth_service
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NAME=auth_db
+      - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
+      - CONSUL_HOST=consul
+      - PORT=3000
+      - ADDRESS=auth-service-2 # Nome para o Consul
+    depends_on:
+      - consul
+      - mysql-db
+
   # Instância 1 do Animal Service
   animal-service-1:
     build: ./Services/adoptationService
@@ -78,10 +94,29 @@ services:
     depends_on:
       - consul
 
+  # Instância 2 do Fake PSP
+  fake-psp-2:
+    build: ./Services/FakePSP
+    environment:
+      - CONSUL_HOST=consul
+      - SERVICE_NAME=payment-service
+      - BASE_URL=http://localhost:7001/payments
+    depends_on:
+      - consul
+
   email-service:
     build: ./Services/emailservice
     environment:
       - CONSUL_HOST=consul
       - EMAIL_HOST=smtp.mailtrap.io # Exemplo
+    depends_on:
+      - consul
+
+  # Instância 2 do Email Service
+  email-service-2:
+    build: ./Services/emailservice
+    environment:
+      - CONSUL_HOST=consul
+      - EMAIL_HOST=smtp.mailtrap.io
     depends_on:
       - consul
