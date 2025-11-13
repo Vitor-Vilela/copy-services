@@ -1,0 +1,74 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:7001",
+    "ServiceDiscoveryProvider": {
+      "Type": "Consul",
+      "Host": "localhost",
+      "Port": 8500,
+      "PollingInterval": 10000
+    }
+  },
+
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/animals",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/api/animals",
+      "DownstreamScheme": "http",
+      "ServiceName": "animal-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "SwaggerKey": "animals"
+    },
+    {
+      "UpstreamPathTemplate": "/animals/{id}",
+      "UpstreamHttpMethod": [ "GET"],
+      "DownstreamPathTemplate": "/api/animals/{id}",
+      "DownstreamScheme": "http",
+      "ServiceName": "animal-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "SwaggerKey": "animals"
+    },
+    {
+      "UpstreamPathTemplate": "/email/health",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/health",
+      "DownstreamScheme": "http",
+      "ServiceName": "email-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "SwaggerKey": "emails"
+    },
+    {
+      "UpstreamPathTemplate": "/email/send",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/send-email",
+      "DownstreamScheme": "http",
+      "ServiceName": "email-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "SwaggerKey": "emails"
+    }
+  ],
+
+  "SwaggerEndPoints": [
+    {
+      "Key": "animals",
+      "Config": [
+        {
+          "Name": "Animal Service",
+          "Version": "v1",
+          "Url": "http://localhost:5089/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "emails",
+      "Config": [
+        {
+          "Name": "Email Service",
+          "Version": "v1",
+          "Url": "http://localhost:8000/openapi.json"
+        }
+      ]
+    }
+
+  ]
+}

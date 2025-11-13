@@ -1,0 +1,61 @@
+=========================================================
+ GUIA RÁPIDO: EXECUTANDO O MICROSSERVIÇO FAKEPSP-PYTHON
+=========================================================
+
+Este guia assume que você já tem a pasta `fakepsp_python` com todos 
+os 7 arquivos (`main.py`, `Dockerfile`, `requirements.txt`, etc.) 
+prontos no seu computador.
+
+---
+### PRÉ-REQUISITOS
+
+1. Docker Desktop: Deve estar instalado e em execução.
+2. Pasta do Projeto: A pasta `fakepsp_python` com os arquivos.
+
+---
+### PASSO 1: CONSTRUIR A IMAGEM DOCKER (REQUISITO R1)
+
+Este comando lê o `Dockerfile` e "empacota" sua aplicação Python 
+em uma imagem pronta para rodar.
+
+1. Abra seu terminal (Prompt de Comando, PowerShell, etc.).
+2. Navegue até a pasta onde estão seus arquivos Python:
+
+   ```bash
+   cd /caminho/para/sua/pasta/fakepsp_python
+Execute o comando de build (O . no final é importante):
+
+Bash
+
+docker build -t fakepsp-python .
+(Aguarde o Docker baixar o Python e instalar as dependências).
+
+PASSO 2: EXECUTAR O CONTÊINER DOCKER
+Agora que a imagem está construída, vamos iniciar um contêiner a partir dela.
+
+No mesmo terminal, execute o comando run:
+
+Bash
+
+docker run -d -p 8001:8000 --name psp-py-container fakepsp-python
+O que esse comando faz:
+
+-d: Roda o contêiner em segundo plano.
+
+-p 8001:8000: Mapeia a porta 8001 da sua máquina para a porta 8000 do contêiner (onde o Python está ouvindo).
+
+--name psp-py-container: Dá um nome fácil ao contêiner.
+
+fakepsp-python: O nome da imagem que você construiu.
+
+PASSO 3: VERIFICAR SE O MICROSSERVIÇO ESTÁ RODANDO
+Para ver se o contêiner está ativo, rode:
+
+Bash
+
+docker ps
+(Você deve ver psp-py-container na lista com o status "Up").
+
+Teste no Navegador: Abra [http://localhost:8001/docs].
+
+Se você vir a documentação da API (FastAPI/Swagger), parabéns, seu microsserviço Python está 100% funcional e rodando de forma isolada no Docker.

@@ -1,0 +1,17 @@
+# Ambiente Virtual
+venv/
+.venv/
+
+# Ficheiros de cache do Python
+__pycache__/
+*.pyc
+
+# Ficheiro de variáveis de ambiente (SENHAS!)
+.env
+
+# Ficheiros do VSCode
+.vscode/
+
+bin/
+
+Debug/

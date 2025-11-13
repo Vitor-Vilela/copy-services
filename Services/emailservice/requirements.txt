@@ -1,0 +1,7 @@
+fastapi           # O framework web para criar a API. É moderno e rápido.
+uvicorn[standard]   # O servidor que vai executar a aplicação FastAPI.
+pydantic          # Para criar os "schemas" (modelos de dados) e validar as requisições.
+python-dotenv     # Para carregar as configurações do arquivo .env.
+python-consul2    # A biblioteca para nosso serviço "conversar" com o Consul.
+email-validator  # Para validar endereços de email.
+sendgrid          # Biblioteca para enviar emails via SendGrid.

@@ -1,0 +1,101 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj": {}
+  },
+  "projects": {
+    "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj",
+        "projectName": "catalogo adocao",
+        "projectPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj",
+        "packagesPath": "/Users/vitorvilela/.nuget/packages/",
+        "outputPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/vitorvilela/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AspNetCore.HealthChecks.UI.Client": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "Consul": {
+              "target": "Package",
+              "version": "[1.7.14.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
