@@ -20,7 +20,7 @@ services:
   api-gateway:
     build: ./Services/ApiGateway
     ports:
-      - "7001:80" # Exposta na 7001
+      - "7001:7001" # Exposta na 7001
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Consul__Host=consul
@@ -74,6 +74,7 @@ services:
     environment:
       - CONSUL_HOST=consul
       - SERVICE_NAME=payment-service
+      - BASE_URL=http://localhost:7001/payments
     depends_on:
       - consul
 

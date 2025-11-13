@@ -81,18 +81,6 @@
           "AuthenticationProviderKey": "Bearer",
           "AllowedScopes": []
       }
-    },
-    {
-      "UpstreamPathTemplate": "/emails/{everything}",
-      "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/send_email/{everything}", 
-      "DownstreamScheme": "http",
-      "ServiceName": "email-service",
-      "LoadBalancerOptions": { "Type": "RoundRobin" },
-      "AuthenticationOptions": { 
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-      }
     }
   ],
 
@@ -103,7 +91,7 @@
         {
           "Name": "Animal Service",
           "Version": "v1",
-          "Url": "http://localhost:5089/swagger/v1/swagger.json"
+          "Url": "http://animal-service-1:80/swagger/v1/swagger.json"
         }
       ]
     },
@@ -113,7 +101,17 @@
         {
           "Name": "Email Service",
           "Version": "v1",
-          "Url": "http://localhost:8000/openapi.json"
+          "Url": "http://email-service:8000/openapi.json"
+        }
+      ]
+    },
+    {
+      "Key": "auth",
+      "Config": [
+        {
+          "Name": "Auth Service",
+          "Version": "v1",
+          "Url": "http://auth-service:3000/api-docs/swagger.json" 
         }
       ]
     }

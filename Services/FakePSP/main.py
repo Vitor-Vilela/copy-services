@@ -17,6 +17,7 @@ import schemas
 import pix_utils
 from database import engine, Base, get_db
 
+BASE_URL_OVERRIDE = os.getenv("BASE_URL")
 SERVICE_NAME = os.getenv("SERVICE_NAME", "payment-service")
 SERVICE_PORT = int(os.getenv("SERVICE_PORT", 8000))
 CONSUL_HOST = os.getenv("CONSUL_HOST", "localhost")
@@ -103,7 +104,12 @@ def create_charge(request_data: schemas.CreateChargeRequest, request: Request, d
     # Monta a URL de checkout
     # (request.url.scheme) pega http ou https
     # (request.url.netloc) pega localhost:port
-    base_url = f"{request.url.scheme}://{request.url.netloc}"
+
+    if BASE_URL_OVERRIDE:
+        base_url = BASE_URL_OVERRIDE
+    else:
+        base_url = f"{request.url.scheme}://{request.url.netloc}"
+    
     checkout_url = f"{base_url}/api/charges/checkout/{new_charge.id}"
     
     print(f"[FakePSP-Python] Cobrança PIX criada: {new_charge.id}. URL de Checkout: {checkout_url}")
