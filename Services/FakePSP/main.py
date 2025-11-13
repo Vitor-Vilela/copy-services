@@ -77,6 +77,10 @@ def on_startup():
 def on_shutdown():
     deregister_service()
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 @app.post("/api/charges", response_model=schemas.CreateChargeResponse)
 def create_charge(request_data: schemas.CreateChargeRequest, request: Request, db: Session = Depends(get_db)):
     """

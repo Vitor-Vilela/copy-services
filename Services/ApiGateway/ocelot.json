@@ -11,7 +11,7 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/animals",
-      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/animals",
       "DownstreamScheme": "http",
       "ServiceName": "animal-service",
