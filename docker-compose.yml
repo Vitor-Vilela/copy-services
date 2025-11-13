@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
   consul:
-    image: consul:latest
+    image: hashicorp/consul:latest
     ports:
       - "8500:8500"
     command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=1 -ui
@@ -13,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: animal_catalog
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - ./mysql-init:/docker-entrypoint-initdb.d # Script para criar banco do Auth também
 
@@ -66,20 +64,22 @@ services:
       - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
       - Consul__Address=http://consul:8500
       - Consul__ServiceName=animal-service
-      - Consul__ServiceAddress=animal-service-1
+      - Consul__ServiceId=animal-service-1
+      - Consul__ServiceAddress=http://animal-service-1
       - Consul__ServicePort=80
     depends_on:
       - consul
       - mysql-db
 
-  # Instância 2 do Animal Service (Load Balancing)
+  # Instância 2 do Animal Service
   animal-service-2:
     build: ./Services/adoptationService
     environment:
       - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
       - Consul__Address=http://consul:8500
       - Consul__ServiceName=animal-service
-      - Consul__ServiceAddress=animal-service-2 # Endereço diferente
+      - Consul__ServiceId=animal-service-2
+      - Consul__ServiceAddress=http://animal-service-2
       - Consul__ServicePort=80
     depends_on:
       - consul

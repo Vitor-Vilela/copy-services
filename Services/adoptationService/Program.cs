@@ -45,7 +45,8 @@ if (app.Environment.IsDevelopment())
 
 }
 
-app.UseHttpsRedirection();
+// Comentado pois o docker usa http internamente
+// app.UseHttpsRedirection();
 
 // Habilita o roteamento para os seus Controllers (como o AnimalController).
 app.MapControllers();

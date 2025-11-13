@@ -53,8 +53,9 @@ app.get("/api-docs/swagger.json", (req, res) => {
   res.send(swaggerDocs);
 });
 
-// Rota para acessar a documentação: http://localhost:3000/api-docs
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Rota para acessar a documentação
+app.use("/api-docs", swaggerUi.serve);
+app.get("/api-docs", swaggerUi.setup(swaggerDocs));
 
 // Rota de saúde
 app.get("/", (req, res) => {
