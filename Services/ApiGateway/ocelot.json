@@ -20,6 +20,19 @@
       "SwaggerKey": "animals"
     },
     {
+      "UpstreamPathTemplate": "/animals",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/animals",
+      "DownstreamScheme": "http",
+      "ServiceName": "animal-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "animals"
+    },
+    {
       "UpstreamPathTemplate": "/animals/{id}",
       "UpstreamHttpMethod": [ "GET"],
       "DownstreamPathTemplate": "/api/animals/{id}",
@@ -44,6 +57,10 @@
       "DownstreamScheme": "http",
       "ServiceName": "email-service",
       "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "emails"
     }
   ],

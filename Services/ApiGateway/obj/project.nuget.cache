@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WqCWwF+dDJE=",
+  "dgSpecHash": "2QAZT1nci7w=",
   "success": true,
-  "projectFilePath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/ApiGateway/ApiGateway.csproj",
+  "projectFilePath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/ApiGateway/ApiGateway.csproj",
   "expectedPackageFiles": [
     "/Users/vitorvilela/.nuget/packages/azure.core/1.44.1/azure.core.1.44.1.nupkg.sha512",
     "/Users/vitorvilela/.nuget/packages/azure.identity/1.13.1/azure.identity.1.13.1.nupkg.sha512",

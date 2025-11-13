@@ -15,3 +15,5 @@ __pycache__/
 bin/
 
 Debug/
+
+node_modules

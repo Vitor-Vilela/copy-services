@@ -3111,11 +3111,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/ApiGateway/ApiGateway.csproj",
+      "projectUniqueName": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/ApiGateway/ApiGateway.csproj",
       "projectName": "ApiGateway",
-      "projectPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/ApiGateway/ApiGateway.csproj",
+      "projectPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/ApiGateway/ApiGateway.csproj",
       "packagesPath": "/Users/vitorvilela/.nuget/packages/",
-      "outputPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/ApiGateway/obj/",
+      "outputPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/ApiGateway/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/vitorvilela/.nuget/NuGet/NuGet.Config"

@@ -3243,11 +3243,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj",
+      "projectUniqueName": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/adoptationService/catalogo adocao.csproj",
       "projectName": "catalogo adocao",
-      "projectPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj",
+      "projectPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/adoptationService/catalogo adocao.csproj",
       "packagesPath": "/Users/vitorvilela/.nuget/packages/",
-      "outputPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/obj/",
+      "outputPath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/adoptationService/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/vitorvilela/.nuget/NuGet/NuGet.Config"

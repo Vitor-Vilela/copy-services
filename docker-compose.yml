@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  consul:
+    image: consul:latest
+    ports:
+      - "8500:8500"
+    command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=1 -ui
+
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: animal_catalog
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d # Script para criar banco do Auth também
+
+  api-gateway:
+    build: ./Services/ApiGateway
+    ports:
+      - "7001:80" # Exposta na 7001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Consul__Host=consul
+      - Consul__Port=8500
+    depends_on:
+      - consul
+
+  auth-service:
+    build: ./Services/auth_service
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NAME=auth_db
+      - JWT_SECRET=sua_chave_super_secreta_que_tem_no_auth_service
+      - CONSUL_HOST=consul
+      - PORT=3000
+      - ADDRESS=auth-service # Nome do host para o Consul
+    depends_on:
+      - consul
+      - mysql-db
+
+  # Instância 1 do Animal Service
+  animal-service-1:
+    build: ./Services/adoptationService
+    environment:
+      - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
+      - Consul__Address=http://consul:8500
+      - Consul__ServiceName=animal-service
+      - Consul__ServiceAddress=animal-service-1
+      - Consul__ServicePort=80
+    depends_on:
+      - consul
+      - mysql-db
+
+  # Instância 2 do Animal Service (Load Balancing)
+  animal-service-2:
+    build: ./Services/adoptationService
+    environment:
+      - ConnectionStrings__DefaultConnection=server=mysql-db;port=3306;database=animal_catalog;user=root;password=root;
+      - Consul__Address=http://consul:8500
+      - Consul__ServiceName=animal-service
+      - Consul__ServiceAddress=animal-service-2 # Endereço diferente
+      - Consul__ServicePort=80
+    depends_on:
+      - consul
+      - mysql-db
+
+  fake-psp:
+    build: ./Services/FakePSP
+    environment:
+      - CONSUL_HOST=consul
+      - SERVICE_NAME=payment-service
+    depends_on:
+      - consul
+
+  email-service:
+    build: ./Services/emailservice
+    environment:
+      - CONSUL_HOST=consul
+      - EMAIL_HOST=smtp.mailtrap.io # Exemplo
+    depends_on:
+      - consul

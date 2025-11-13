@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iYLUtTeG4LY=",
+  "dgSpecHash": "RHUEcgpY1fU=",
   "success": true,
-  "projectFilePath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/copy-services/Services/adoptationService/catalogo adocao.csproj",
+  "projectFilePath": "/Users/vitorvilela/Desktop/temp/materias-faculdade/2025-2/back-end-cloud/carrocinhha-do-bem/Services/adoptationService/catalogo adocao.csproj",
   "expectedPackageFiles": [
     "/Users/vitorvilela/.nuget/packages/aspnetcore.healthchecks.ui.client/9.0.0/aspnetcore.healthchecks.ui.client.9.0.0.nupkg.sha512",
     "/Users/vitorvilela/.nuget/packages/aspnetcore.healthchecks.ui.core/9.0.0/aspnetcore.healthchecks.ui.core.9.0.0.nupkg.sha512",

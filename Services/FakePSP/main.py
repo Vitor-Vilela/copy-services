@@ -1,3 +1,6 @@
+import os
+import uuid
+import consul
 from fastapi import FastAPI, Depends, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
@@ -6,12 +9,19 @@ import qrcode
 import httpx
 import io
 import base64
+import socket
 
 # Importações locais
 import models
 import schemas
 import pix_utils
 from database import engine, Base, get_db
+
+SERVICE_NAME = os.getenv("SERVICE_NAME", "payment-service")
+SERVICE_PORT = int(os.getenv("SERVICE_PORT", 8000))
+CONSUL_HOST = os.getenv("CONSUL_HOST", "localhost")
+CONSUL_PORT = int(os.getenv("CONSUL_PORT", 8500))
+SERVICE_ID = f"{SERVICE_NAME}-{uuid.uuid4()}"
 
 # Cria as tabelas no banco de dados (se não existirem)
 Base.metadata.create_all(bind=engine)
@@ -22,6 +32,49 @@ app = FastAPI(title="FakePSP API (Python)")
 # Adicionando verify=False para ignorar verificação SSL (comum em localhost)
 http_client = httpx.AsyncClient(verify=False)
 
+consul_client = consul.Consul(host=CONSUL_HOST, port=CONSUL_PORT)
+
+def get_service_ip():
+    try:
+        return socket.gethostbyname(socket.gethostname())
+    except socket.gaierror:
+        return "127.0.0.1"
+
+def register_service():
+    ip = get_service_ip()
+    print(f"Registrando serviço {SERVICE_ID} em {ip}:{SERVICE_PORT} no Consul...")
+    try:
+        consul_client.agent.service.register(
+            name=SERVICE_NAME,
+            service_id=SERVICE_ID,
+            address=ip,
+            port=SERVICE_PORT,
+            check={
+                "http": f"http://{ip}:{SERVICE_PORT}/health",
+                "interval": "10s",
+                "timeout": "5s",
+                "deregistercriticalserviceafter": "30s"
+            }
+        )
+        print("Serviço registrado com sucesso no Consul.")
+    except Exception as e:
+        print(f"!!!!!! Erro ao registrar no Consul: {e}. O serviço continuará rodando localmente. !!!!!!")
+
+def deregister_service():
+    print(f"Desregistrando serviço {SERVICE_ID}...")
+    try:
+        consul_client.agent.service.deregister(service_id=SERVICE_ID)
+        print("Serviço desregistrado do Consul.")
+    except Exception as e:
+        print(f"!!!!!! Erro ao desregistrar do Consul: {e}. !!!!!!")
+
+@app.on_event("startup")
+def on_startup():
+    register_service()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    deregister_service()
 
 @app.post("/api/charges", response_model=schemas.CreateChargeResponse)
 def create_charge(request_data: schemas.CreateChargeRequest, request: Request, db: Session = Depends(get_db)):

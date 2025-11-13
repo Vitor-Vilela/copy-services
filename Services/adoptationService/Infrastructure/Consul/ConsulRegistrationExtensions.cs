@@ -21,8 +21,8 @@ namespace AnimalCatalog.API.Infrastructure.Consul
             var consulAddr = consulCfg.GetValue<string>("Address");
             var serviceId = consulCfg.GetValue<string>("ServiceId");
             var serviceName = consulCfg.GetValue<string>("ServiceName");
-            var serviceAddr = consulCfg.GetValue<string>("ServiceAddress");
-            var servicePort = consulCfg.GetValue<int>("ServicePort");
+            var serviceAddr = config.GetValue<string>("Consul:ServiceAddress") ?? "adoptation-service";
+            var servicePort = config.GetValue<int?>("Consul:ServicePort") ?? 80;
             var tags = consulCfg.GetSection("Tags").Get<string[]>() ?? Array.Empty<string>();
             var intervalStr = consulCfg.GetValue<string>("HealthCheckInterval") ?? "00:00:10";
             var deregStr = consulCfg.GetValue<string>("DeregisterCriticalServiceAfter") ?? "00:01:00";

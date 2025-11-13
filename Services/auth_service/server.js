@@ -43,7 +43,7 @@ const swaggerOptions = {
     },
   },
   // Indica onde o Swagger deve procurar por anotações (nos arquivos de rotas)
-  apis: ["./routes/*.js"], 
+  apis: ["./routes/*.js"],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -52,14 +52,55 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Rota de saúde
 app.get("/", (req, res) => {
-  res.send("Auth Microservice está rodando! Acesse /api-docs para documentação.");
+  res.send(
+    "Auth Microservice está rodando! Acesse /api-docs para documentação."
+  );
 });
 
 // Rotas da API
 app.use("/api/auth", authRoutes);
 
+const Consul = require("consul");
+const { v4: uuidv4 } = require("uuid");
+
+const consul = new Consul({
+  host: process.env.CONSUL_HOST || "localhost",
+  port: process.env.CONSUL_PORT || 8500,
+});
+
+const SERVICE_NAME = "auth-service";
+const SERVICE_PORT = process.env.PORT || 3000;
+const SERVICE_ID = `${SERVICE_NAME}-${uuidv4()}`;
+
+const registerService = () => {
+  const check = {
+    http: `http://${
+      process.env.ADDRESS || "host.docker.internal"
+    }:${SERVICE_PORT}/`,
+    interval: "10s",
+    timeout: "5s",
+  };
+
+  consul.agent.service.register(
+    {
+      name: SERVICE_NAME,
+      id: SERVICE_ID,
+      address: process.env.ADDRESS || "host.docker.internal",
+      port: Number(SERVICE_PORT),
+      check: check,
+    },
+    (err) => {
+      if (err) console.error("Erro ao registrar no Consul:", err);
+      else console.log("Auth Service registrado no Consul com sucesso.");
+    }
+  );
+};
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
+  registerService();
   console.log(`[AuthService-MySQL] Rodando na porta ${PORT}`);
-  console.log(`[AuthService-MySQL] Swagger disponível em http://localhost:${PORT}/api-docs`);
+  console.log(
+    `[AuthService-MySQL] Swagger disponível em http://localhost:${PORT}/api-docs`
+  );
 });
