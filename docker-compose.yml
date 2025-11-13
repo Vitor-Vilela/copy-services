@@ -35,7 +35,7 @@ services:
       - DB_USER=root
       - DB_PASS=root
       - DB_NAME=auth_db
-      - JWT_SECRET=sua_chave_super_secreta_que_tem_no_auth_service
+      - JWT_SECRET=minha-chave-super-secreta-do-brasil-sil-sil
       - CONSUL_HOST=consul
       - PORT=3000
       - ADDRESS=auth-service # Nome do host para o Consul

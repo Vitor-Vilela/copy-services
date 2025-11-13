@@ -4,8 +4,7 @@
     "ServiceDiscoveryProvider": {
       "Type": "Consul",
       "Host": "localhost",
-      "Port": 8500,
-      "PollingInterval": 10000
+      "Port": 8500
     }
   },
 
@@ -62,6 +61,38 @@
         "AllowedScopes": []
       },
       "SwaggerKey": "emails"
+    },
+    {
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "ServiceName": "auth-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" }
+    },
+    {
+      "UpstreamPathTemplate": "/payments/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "DownstreamPathTemplate": "/{everything}", 
+      "DownstreamScheme": "http",
+      "ServiceName": "payment-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/emails/{everything}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/send_email/{everything}", 
+      "DownstreamScheme": "http",
+      "ServiceName": "email-service",
+      "LoadBalancerOptions": { "Type": "RoundRobin" },
+      "AuthenticationOptions": { 
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+      }
     }
   ],
 

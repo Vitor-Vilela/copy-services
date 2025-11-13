@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
-var secretKey = "sua_chave_super_secreta_que_tem_no_auth_service"; // Deve ser a mesma do Auth Service
+var secretKey = "minha-chave-super-secreta-do-brasil-sil-sil"; // Deve ser a mesma do Auth Service
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(options =>
